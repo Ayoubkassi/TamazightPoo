@@ -860,7 +860,7 @@ def p_expression_minus(p):
 def p_expression_term(p):
     'expression : term'
     p[0] = p[1]
-    
+
 
 def p_term_times(p):
     'term : term TIMES factor'
@@ -921,160 +921,162 @@ def build_parser(source):
         #    continue
         return
     # WHILE STATEMENT
-    if "kissm" in s:
-        #print("kisssssssm")
-        attributes = s.split("->")[1].split(",")
-        pattern_name = s.split("->")[0].split(" ")[1]
-        #patternn = pattern(pattern_name, attributes)
-        #patterns[pattern_name] = patternn
-        # form is sahih id = 1
-        attrCount = 0
-        for attr in attributes:
-            if(attrCount != len(attributes) -1):
-                attr = attr + ";"
-                nameVar =pattern_name + "_" + attr.split(" ")[2]
-                typeVar = attr.split(" ")[1]
-                valueVar = attr.split("=")[1]
-                resVar = typeVar+" "+nameVar+" ="+valueVar
-                #print("changed : ",resVar)
-                #print("attr : ",attr)
-                parser.parse(resVar)
+    try :
+        if "kissm" in s:
+            #print("kisssssssm")
+            attributes = s.split("->")[1].split(",")
+            pattern_name = s.split("->")[0].split(" ")[1]
+            #patternn = pattern(pattern_name, attributes)
+            #patterns[pattern_name] = patternn
+            # form is sahih id = 1
+            attrCount = 0
+            for attr in attributes:
+                if(attrCount != len(attributes) -1):
+                    attr = attr + ";"
+                    nameVar =pattern_name + "_" + attr.split(" ")[2]
+                    typeVar = attr.split(" ")[1]
+                    valueVar = attr.split("=")[1]
+                    resVar = typeVar+" "+nameVar+" ="+valueVar
+                    #print("changed : ",resVar)
+                    #print("attr : ",attr)
+                    parser.parse(resVar)
 
-            else :
-                nameVar = pattern_name + "_" + attr.split(" ")[2]
-                typeVar = attr.split(" ")[1]
-                valueVar = attr.split("=")[1]
-                resVar = typeVar+" "+nameVar+" ="+valueVar
-                #print("changed : ",resVar)
-                #print("attr : ",attr)
-                parser.parse(resVar)
+                else :
+                    nameVar = pattern_name + "_" + attr.split(" ")[2]
+                    typeVar = attr.split(" ")[1]
+                    valueVar = attr.split("=")[1]
+                    resVar = typeVar+" "+nameVar+" ="+valueVar
+                    #print("changed : ",resVar)
+                    #print("attr : ",attr)
+                    parser.parse(resVar)
 
-            attrCount+=1
-            #parser.parse(attr)
+                attrCount+=1
+                #parser.parse(attr)
 
-    #while -> ma7d
-    elif "ma7d" in s:
-        prestatements = s.split("{")
-        statements = ""
-        for i in range(1, len(prestatements)):
-            if i != len(prestatements) - 1:
-                statements += prestatements[i] + "{"
-            else:
-                statements += prestatements[i]
-        prestatements = statements.split("}")
-        statements = ""
-        for i in range(0, len(prestatements) - 1):
-            if i != len(prestatements) - 2:
-                statements += prestatements[i] + "}"
-            else:
-                statements += prestatements[i]
-        condition = s.split("(")[1].split(")")[0]
-        statements = str(statements)
-        is_looping = True
-        while parser.parse(condition)[0] == True and is_looping == True:
-            if is_looping == True:
+        #while -> ma7d
+        elif "ma7d" in s:
+            prestatements = s.split("{")
+            statements = ""
+            for i in range(1, len(prestatements)):
+                if i != len(prestatements) - 1:
+                    statements += prestatements[i] + "{"
+                else:
+                    statements += prestatements[i]
+            prestatements = statements.split("}")
+            statements = ""
+            for i in range(0, len(prestatements) - 1):
+                if i != len(prestatements) - 2:
+                    statements += prestatements[i] + "}"
+                else:
+                    statements += prestatements[i]
+            condition = s.split("(")[1].split(")")[0]
+            statements = str(statements)
+            is_looping = True
+            while parser.parse(condition)[0] == True and is_looping == True:
+                if is_looping == True:
+                    result = parser.parse(statements)
+                else:
+                    break
+                if result != None:
+                    for r in result:
+                        if r is not None and r != 'hbes':
+                            print(r)
+                        elif r is not None and r == 'hbes':
+                            is_looping = False
+                            break
+
+        # FOR STATEMENT
+        elif "t3awd" in s:
+            var = s.split("(")[1].split(")")[0].split(";")[0] + ";"
+            condition = s.split("(")[1].split(")")[0].split(";")[1]
+            inc = str(s.split("(")[1].split(")")[0].split(";")[2] + ";")
+            statements = str(s.split("{")[1].split("}")[0])
+
+            parser.parse(var)
+            is_looping = True
+            while parser.parse(condition)[0] == True and is_looping == True:
                 result = parser.parse(statements)
+                if result is not None:
+                    for r in result:
+                        if r is not None and r != "hbes":
+                            print(r)
+                        elif r is not None and r == "hbes":
+                            is_looping = False
+                            break
+                parser.parse(inc)
+
+        # FUNCTION DECLARATIONS
+        elif "dalla" in s:
+            parameters = s[s.index("(") + 1: s.index(")")]
+            tasks = s[s.index("{") + 1: s.index("}")]
+            func_name = s[s.index("dalla") + 6: s.index("(")]
+            functionn = function(func_name, parameters, tasks)
+            functions[func_name] = functionn
+
+        # FUNCTION CALL
+        elif "dir" in s and "ila" in s:
+            condition = s[s.index("(") + 1: s.index(")")]
+            statement = s[s.index("{") + 1: s.index("}")]
+
+            if parser.parse(condition) == [True]:
+                build_parser(statement)
             else:
-                break
+                pass
+
+
+        elif "dir" in s and "ila" not in s:
+            # FUNCTION CALL
+            func_name = s[s.index("dir") + 4: s.index("(")]
+            dirr = s[s.index("dir"): s.index("dir") + 3]
+
+
+            if func_name in functions and ")" in s and ";" in s and "(" in s and dirr == "dir":
+                pars = s.split("(")[1].split(")")[0]
+                if ',' in pars:
+                    pars = pars.split(",")
+                else:
+                    pars = [pars]
+
+                if len(pars) == functions[func_name].count:
+                    listy = []
+
+                    for par in pars:
+                        if isinstance(par, str):
+                            found = variable_exists(par)
+                            if found != None:
+                                valuee = found.get_value()
+                                listy.append(valuee)
+                                continue
+                        if '"' == par[0] and '"' == par[-1]:
+                            listy.append(par)
+                        elif par == 'vri':
+                            listy.append(True)
+                        elif par == 'ffo':
+                            listy.append(False)
+                        elif '.' in par:
+                            listy.append(float(par))
+                        else:
+                            listy.append(int(par))
+
+                    functions[func_name].parse(listy)
+                else:
+                    print(errors[7][1])
+
+
+        # ANYTHING ELSE
+        else:
+            result = parser.parse(s)
+
             if result != None:
                 for r in result:
-                    if r is not None and r != 'hbes':
+                    if r is not None and r != True and r != False:
                         print(r)
-                    elif r is not None and r == 'hbes':
-                        is_looping = False
-                        break
-
-    # FOR STATEMENT
-    elif "t3awd" in s:
-        var = s.split("(")[1].split(")")[0].split(";")[0] + ";"
-        condition = s.split("(")[1].split(")")[0].split(";")[1]
-        inc = str(s.split("(")[1].split(")")[0].split(";")[2] + ";")
-        statements = str(s.split("{")[1].split("}")[0])
-
-        parser.parse(var)
-        is_looping = True
-        while parser.parse(condition)[0] == True and is_looping == True:
-            result = parser.parse(statements)
-            if result is not None:
-                for r in result:
-                    if r is not None and r != "hbes":
-                        print(r)
-                    elif r is not None and r == "hbes":
-                        is_looping = False
-                        break
-            parser.parse(inc)
-
-    # FUNCTION DECLARATIONS
-    elif "dalla" in s:
-        parameters = s[s.index("(") + 1: s.index(")")]
-        tasks = s[s.index("{") + 1: s.index("}")]
-        func_name = s[s.index("dalla") + 6: s.index("(")]
-        functionn = function(func_name, parameters, tasks)
-        functions[func_name] = functionn
-
-    # FUNCTION CALL
-    elif "dir" in s and "ila" in s:
-        condition = s[s.index("(") + 1: s.index(")")]
-        statement = s[s.index("{") + 1: s.index("}")]
-
-        if parser.parse(condition) == [True]:
-            build_parser(statement)
-        else:
-            pass
-
-
-    elif "dir" in s and "ila" not in s:
-        # FUNCTION CALL
-        func_name = s[s.index("dir") + 4: s.index("(")]
-        dirr = s[s.index("dir"): s.index("dir") + 3]
-
-
-        if func_name in functions and ")" in s and ";" in s and "(" in s and dirr == "dir":
-            pars = s.split("(")[1].split(")")[0]
-            if ',' in pars:
-                pars = pars.split(",")
-            else:
-                pars = [pars]
-
-            if len(pars) == functions[func_name].count:
-                listy = []
-
-                for par in pars:
-                    if isinstance(par, str):
-                        found = variable_exists(par)
-                        if found != None:
-                            valuee = found.get_value()
-                            listy.append(valuee)
-                            continue
-                    if '"' == par[0] and '"' == par[-1]:
-                        listy.append(par)
-                    elif par == 'vri':
-                        listy.append(True)
-                    elif par == 'ffo':
-                        listy.append(False)
-                    elif '.' in par:
-                        listy.append(float(par))
-                    else:
-                        listy.append(int(par))
-
-                functions[func_name].parse(listy)
-            else:
-                print(errors[7][1])
-
-
-    # ANYTHING ELSE
-    else:
-        result = parser.parse(s)
-
-        if result != None:
-            for r in result:
-                if r is not None and r != True and r != False:
-                    print(r)
-                elif r is not None and r == True:
-                    print('vri')
-                elif r is not None and r == False:
-                    print('ffo')
-
+                    elif r is not None and r == True:
+                        print('vri')
+                    elif r is not None and r == False:
+                        print('ffo')
+    except Exception:
+        print("chi7aja ortli lmochkil")
 
 def blockify(source):
     blocks = []
