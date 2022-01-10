@@ -860,7 +860,7 @@ def p_expression_minus(p):
 def p_expression_term(p):
     'expression : term'
     p[0] = p[1]
-
+    
 
 def p_term_times(p):
     'term : term TIMES factor'

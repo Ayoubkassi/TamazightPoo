@@ -7,7 +7,7 @@ Unused terminals:
     FUNCTION
     INT_CONST
     RETURN
-    owyar
+    continue
 
 Grammar
 
@@ -189,8 +189,8 @@ TRUE                 : 33 35 37 37 38 39 42 46 49 51 53 53 54 55 58 62 67 75 102
 UNION                : 6 7 8
 VAR_TYPE             : 5
 WHILE                : 116 117 118
+continue             : 
 error                : 
-owyar                : 
 
 Nonterminals, with rules where they appear
 

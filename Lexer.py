@@ -6,10 +6,10 @@ literals = ('{', '}')
 #A list of reserved words
 reserved = {
     'error'       : 'ID',
-    'ara'        : 'PRINT',
+    'ara'         : 'PRINT',
     'sahih'       : 'INT',
     'hbes'        : 'BREAK',
-    'chkechm'        : 'INPUT',
+    'chkechm'     : 'INPUT',
     'oula'        : 'ELSE',
     'marka'       : 'VAR_TYPE',
     'harf'        : 'CHAR',
@@ -17,11 +17,11 @@ reserved = {
     'jme3lia'     : 'UNION',
     'kemel'       : 'continue',
     'kissm'       : 'CLASS',
-    't3awd'      : 'FOR',
+    't3awd'       : 'FOR',
     'dalla'       : 'FUNCTION',
     'ila'         : 'IF',
-    'ma7d'       : 'WHILE',
-    'ch7alkaynf'        : 'SIZEOF',
+    'ma7d'        : 'WHILE',
+    'ch7alkaynf'  : 'SIZEOF',
     'achari'      : 'FLOATTYPE',
     'manti9i'     : 'BOOL',
     'vri'         : 'TRUE',
@@ -159,4 +159,4 @@ def build_lexer(source_code):
         if not tok:
             print("ykeml lbrnamaj, hakin akit3awen rebi")
             break
-        #print(tok)
+        print(tok)
