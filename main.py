@@ -32,13 +32,19 @@ def save_as():
 
 def open_file():
     global text
-    file_path = filedialog.askopenfilename()
-    file_name = file_path.split("/")
-    with open(file_path,'r') as file:
-        data = file.read()
-        text.delete("1.0", END)
-        text.insert(END,data)
-        root.title("T++: {0}".format(file_name[-1]))
+    try :
+        file_path = filedialog.askopenfilename()
+        file_name = file_path.split("/")
+        extension = file_name[-1].split('.')[-1]
+        with open(file_path,'r') as file:
+            data = file.read()
+            if (extension != 'tpp'): raise Exception("File Extension not Supported")
+            else:
+                text.delete("1.0", END)
+                text.insert(END,data)
+                root.title("T++: {0}".format(file_name[-1]))
+    except Exception as e:
+        print(f"Error : {str(e)}")
 
 def run_code():
     global text
